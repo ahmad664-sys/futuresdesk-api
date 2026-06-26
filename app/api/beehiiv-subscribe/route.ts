@@ -1,5 +1,18 @@
 import { NextResponse } from "next/server"
 
+const corsHeaders = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+}
+
+export async function OPTIONS() {
+    return new NextResponse(null, {
+        status: 204,
+        headers: corsHeaders,
+    })
+}
+
 export async function POST(request: Request) {
     try {
         const { email, name } = await request.json()
@@ -7,7 +20,10 @@ export async function POST(request: Request) {
         if (!email) {
             return NextResponse.json(
                 { success: false, message: "Email is required" },
-                { status: 400 }
+                {
+                    status: 400,
+                    headers: corsHeaders,
+                }
             )
         }
 
@@ -49,14 +65,20 @@ export async function POST(request: Request) {
                 },
                 {
                     status: response.status,
+                    headers: corsHeaders,
                 }
             )
         }
 
-        return NextResponse.json({
-            success: true,
-            subscriber: data,
-        })
+        return NextResponse.json(
+            {
+                success: true,
+                subscriber: data,
+            },
+            {
+                headers: corsHeaders,
+            }
+        )
     } catch (error) {
         console.error(error)
 
@@ -67,6 +89,7 @@ export async function POST(request: Request) {
             },
             {
                 status: 500,
+                headers: corsHeaders,
             }
         )
     }
