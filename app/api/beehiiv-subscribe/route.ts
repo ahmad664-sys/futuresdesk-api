@@ -15,7 +15,7 @@ export async function OPTIONS() {
 
 export async function POST(request: Request) {
     try {
-        const { email, name } = await request.json()
+        const { email, name, subscription_tier } = await request.json()
 
         if (!email) {
             return NextResponse.json(
@@ -26,6 +26,12 @@ export async function POST(request: Request) {
                 }
             )
         }
+
+        const safeTier = ["free", "desk", "syndicate"].includes(
+            subscription_tier
+        )
+            ? subscription_tier
+            : "free"
 
         const response = await fetch(
             `https://api.beehiiv.com/v2/publications/${process.env.BEEHIIV_PUBLICATION_ID}/subscriptions`,
@@ -48,7 +54,7 @@ export async function POST(request: Request) {
                         },
                         {
                             name: "subscription_tier",
-                            value: "free",
+                            value: safeTier,
                         },
                     ],
                 }),
