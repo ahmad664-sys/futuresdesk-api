@@ -6,11 +6,11 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 const corsHeaders = {
     "Access-Control-Allow-Origin": "https://voluntary-jupiter-409713.framer.app",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Allow-Headers": "Content-Type",
 }
 
 export async function OPTIONS() {
-    return new NextResponse(null, {
+    return new Response(null, {
         status: 204,
         headers: corsHeaders,
     })
@@ -19,7 +19,7 @@ export async function OPTIONS() {
 export async function GET() {
     return NextResponse.json(
         { ok: true, message: "Stripe upgrade API is live" },
-        { headers: corsHeaders }
+        { status: 200, headers: corsHeaders }
     )
 }
 
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json(
             { url: session.url },
-            { headers: corsHeaders }
+            { status: 200, headers: corsHeaders }
         )
     } catch (error: unknown) {
         const message =
