@@ -4,13 +4,23 @@ import Stripe from "stripe"
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 
 const corsHeaders = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Origin": "https://voluntary-jupiter-409713.framer.app",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
 }
 
 export async function OPTIONS() {
-    return NextResponse.json({}, { headers: corsHeaders })
+    return new NextResponse(null, {
+        status: 204,
+        headers: corsHeaders,
+    })
+}
+
+export async function GET() {
+    return NextResponse.json(
+        { ok: true, message: "Stripe upgrade API is live" },
+        { headers: corsHeaders }
+    )
 }
 
 export async function POST(req: NextRequest) {
@@ -26,7 +36,8 @@ export async function POST(req: NextRequest) {
 
         const session = await stripe.billingPortal.sessions.create({
             customer: customerId,
-            return_url: returnUrl || "https://futuresdesk.io/dashboard",
+            return_url:
+                returnUrl || "https://voluntary-jupiter-409713.framer.app/dashboard",
             configuration: process.env.STRIPE_PORTAL_CONFIGURATION_ID!,
         })
 
