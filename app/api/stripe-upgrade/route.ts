@@ -34,11 +34,16 @@ export async function POST(req: NextRequest) {
             { url: session.url },
             { headers: corsHeaders }
         )
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const message =
+            error instanceof Error ? error.message : "Unknown Stripe error"
+
+        console.error("Stripe portal error:", error)
+
         return NextResponse.json(
             {
                 error: "Failed to create portal session",
-                message: error?.message,
+                message,
             },
             { status: 500, headers: corsHeaders }
         )
